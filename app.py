@@ -70,6 +70,8 @@ def handle_message(event):
         try:
             sheet = get_sheet()
             rows = sheet.get_all_values()
+            print(f"DEBUG rows count: {len(rows)}")
+            print(f"DEBUG rows: {rows}")
             if len(rows) <= 1:
                 reply_text = "ไม่มีรายการให้ลบครับ"
             else:
