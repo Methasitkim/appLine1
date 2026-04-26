@@ -23,7 +23,7 @@ def get_sheet():
     creds_json = json.loads(os.environ.get("GOOGLE_CREDENTIALS"))
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_json, scope)
     client = gspread.authorize(creds)
-    return client.open("FinBot").sheet1
+    return client.open("appLine1").sheet1
 
 def get_category(text):
     food = ["กาแฟ","ข้าว","อาหาร","กิน","ชา","ขนม"]
@@ -48,10 +48,14 @@ def callback():
 def handle_message(event):
     text = event.message.text.strip()
     parts = text.split()
-    if len(parts) == 2:
+    print(f"DEBUG: text='{text}' parts={parts} len={len(parts)}")
+    if len(parts) >= 2:
+        parts = [parts[0], parts[-1]]
         try:
             name = parts[0]
-            amount = float(parts[1].replace("+",""))
+            amount_str = parts[1].replace("+","").strip()
+            print(f"DEBUG: name='{name}' amount_str='{amount_str}'")
+            amount = float(amount_str)
             is_income = "+" in parts[1]
             category = "รายรับ" if is_income else get_category(name)
             date = datetime.now().strftime("%d/%m/%Y %H:%M")
@@ -59,7 +63,8 @@ def handle_message(event):
             sheet.append_row([date, name, amount, category])
             emoji = "💰" if is_income else "💸"
             reply_text = f"{emoji} บันทึกแล้ว!\n{name} = {amount:.0f} บาท\nหมวด: {category}"
-        except:
+        except Exception as e:
+            print(f"DEBUG error: {e}")
             reply_text = "พิมพ์ให้ถูกรูปแบบนะครับ\nเช่น: กาแฟ 60\nหรือ: เงินเดือน +15000"
     elif text == "สรุป":
         sheet = get_sheet()
