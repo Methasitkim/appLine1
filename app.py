@@ -76,7 +76,7 @@ def handle_message(event):
                 reply_text = "ไม่มีรายการให้ลบครับ"
             else:
                 last_row = rows[-1]
-                sheet.delete_rows(len(rows), len(rows))
+                sheet.delete_rows(len(rows))
                 reply_text = f"🗑️ ลบรายการล่าสุดแล้ว!\n{last_row[1]} = {last_row[2]} บาท\nหมวด: {last_row[3]}"
         except Exception as e:
             print(f"DEBUG error: {e}")
