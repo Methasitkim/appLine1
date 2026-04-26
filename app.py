@@ -66,6 +66,19 @@ def handle_message(event):
         except Exception as e:
             print(f"DEBUG error: {e}")
             reply_text = "พิมพ์ให้ถูกรูปแบบนะครับ\nเช่น: กาแฟ 60\nหรือ: เงินเดือน +15000"
+    elif text == "ลบ":
+        try:
+            sheet = get_sheet()
+            rows = sheet.get_all_values()
+            if len(rows) <= 1:
+                reply_text = "ไม่มีรายการให้ลบครับ"
+            else:
+                last_row = rows[-1]
+                sheet.delete_rows(len(rows))
+                reply_text = f"🗑️ ลบรายการล่าสุดแล้ว!\n{last_row[1]} = {last_row[2]} บาท\nหมวด: {last_row[3]}"
+        except Exception as e:
+            print(f"DEBUG error: {e}")
+        reply_text = "เกิดข้อผิดพลาด ลองใหม่นะครับ"
     elif text == "สรุป":
         sheet = get_sheet()
         rows = sheet.get_all_values()[1:]
